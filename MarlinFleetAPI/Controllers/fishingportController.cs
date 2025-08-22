@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
+using System.Web.Http.Results;
 using MarlinFleetAPI.Models;
 using MarlinFleetAPI.Services;
 
@@ -24,6 +25,20 @@ namespace MarlinFleetAPI.Controllers
             List<tbl_fishingport> listports = new List<tbl_fishingport>();
             listports = FishingportService.ListAllPorts();
             var response = new ApiResponse<List<tbl_fishingport>>("port's list success",listports,true);
+            return Ok(response);
+        }
+        [HttpGet]
+        public IHttpActionResult GetPortById(Guid uuid)
+        {
+            var port = FishingportService.findPort(uuid);
+            var response = new ApiResponse<tbl_fishingport>("",null,false);
+            if(port is null)
+            { 
+                response.message = "Not Found port: " + uuid;
+                return Content(HttpStatusCode.NotFound, response);
+            }
+            response.success = true;
+            response.message = "Port Founded: " + uuid;
             return Ok(response);
         }
 

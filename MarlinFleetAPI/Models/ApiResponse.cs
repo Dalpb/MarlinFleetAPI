@@ -5,11 +5,12 @@ using System.Web;
 
 namespace MarlinFleetAPI.Models
 {
+    //buena praactica según montoya ,fe
     public class ApiResponse<T>
     {
-        private string message { get; set; }
-        private T data { get; set; }
-        private bool success { get; set; }
+        public string message { get; set; }
+        public T data { get; set; }
+        public bool success { get; set; }
 
         public ApiResponse(string message, T data, bool success)
         {

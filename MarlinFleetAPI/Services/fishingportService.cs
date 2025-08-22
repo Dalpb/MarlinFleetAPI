@@ -21,6 +21,11 @@ namespace MarlinFleetAPI.Services
             return marlinBD.tbl_fishingport.ToList();
         }
 
+        public tbl_fishingport findPort(Guid id)
+        {
+            return marlinBD.tbl_fishingport.Find(id);
+        }
+
         public tbl_fishingport CreateNewPort( tbl_fishingport newPort)
         {
             tbl_fishingport portEntity = null;
