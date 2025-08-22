@@ -34,5 +34,14 @@ namespace MarlinFleetAPI.Services
             return portEntity;
         }
 
+        public void UpdatePort(tbl_fishingport currentPort,tbl_fishingport newPort)
+        {
+            currentPort.name = newPort.name;
+            currentPort.location = newPort.location;
+            currentPort.capacity = newPort.capacity;
+            currentPort.tbl_boat = newPort.tbl_boat;
+            marlinBD.SaveChanges();
+        }
+
     }
 }

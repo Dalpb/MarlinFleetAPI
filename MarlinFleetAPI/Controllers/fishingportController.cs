@@ -43,7 +43,7 @@ namespace MarlinFleetAPI.Controllers
         }
 
         [HttpPost]
-        public IHttpActionResult PostNewPort(tbl_fishingport fishingport)
+        public IHttpActionResult PostNewPort([FromBody] tbl_fishingport fishingport)
         {
             try
             {
@@ -61,6 +61,36 @@ namespace MarlinFleetAPI.Controllers
                 return Content(HttpStatusCode.InternalServerError, response);
             }
         }
+
+        [HttpPut]
+        public IHttpActionResult PutFishingPort(Guid id, [FromBody] tbl_fishingport upfishingport)
+        {
+            var response = new ApiResponse<tbl_fishingport>("", null, false);
+            if(upfishingport.id == id)
+            {
+                response.message = "Id is not equal";
+                return Content(HttpStatusCode.BadRequest, response);
+            }
+            var currPort = FishingportService.findPort(id);
+            if (currPort is null)
+            {
+                response.message = "Not Found port'id: " + id;
+                return Content(HttpStatusCode.NotFound, response);
+            }
+            try
+            {
+                FishingportService.UpdatePort(currPort, upfishingport);
+                response.message = "Port update successfuly";
+                response.success = true;
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.message = "Server Error";
+                return Content(HttpStatusCode.InternalServerError, response); 
+            }
+        }
+
 
         // GET: api/fishingport
         /*   public IQueryable<tbl_fishingport> Gettbl_fishingport()
