@@ -1,0 +1,430 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="MarlinFleetBDModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tbl_boat">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="id_fishingport" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="registration" Type="varchar" MaxLength="7" Nullable="false" />
+          <Property Name="weight" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_catch">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="id_trip" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="id_specie" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="quantity" Type="int" Nullable="false" />
+          <Property Name="weight" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_fishingport">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="location" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="capacity" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_fspecies">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_member">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="surnames" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="role" Type="nvarchar" MaxLength="40" Nullable="false" />
+          <Property Name="experience_years" Type="int" />
+          <Property Name="registration_date" Type="date" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_trip">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="id_boat" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="departure_date" Type="datetime" Nullable="false" />
+          <Property Name="return_date" Type="datetime" />
+          <Property Name="destination" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="tbl_tripmember">
+          <Key>
+            <PropertyRef Name="id_trip" />
+            <PropertyRef Name="id_member" />
+          </Key>
+          <Property Name="id_trip" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="id_member" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__tbl_boat__weight__0A9D95DB">
+          <End Role="tbl_fishingport" Type="Self.tbl_fishingport" Multiplicity="1" />
+          <End Role="tbl_boat" Type="Self.tbl_boat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_fishingport">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_boat">
+              <PropertyRef Name="id_fishingport" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_catch__id_sp__1DB06A4F">
+          <End Role="tbl_fspecies" Type="Self.tbl_fspecies" Multiplicity="1" />
+          <End Role="tbl_catch" Type="Self.tbl_catch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_fspecies">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_catch">
+              <PropertyRef Name="id_specie" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_catch__id_tr__1CBC4616">
+          <End Role="tbl_trip" Type="Self.tbl_trip" Multiplicity="1" />
+          <End Role="tbl_catch" Type="Self.tbl_catch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_trip">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_catch">
+              <PropertyRef Name="id_trip" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_trip__destin__0E6E26BF">
+          <End Role="tbl_boat" Type="Self.tbl_boat" Multiplicity="1" />
+          <End Role="tbl_trip" Type="Self.tbl_trip" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_boat">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_trip">
+              <PropertyRef Name="id_boat" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_tripm__id_me__18EBB532">
+          <End Role="tbl_member" Type="Self.tbl_member" Multiplicity="1" />
+          <End Role="tbl_tripmember" Type="Self.tbl_tripmember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_member">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_tripmember">
+              <PropertyRef Name="id_member" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_tripm__id_tr__17F790F9">
+          <End Role="tbl_trip" Type="Self.tbl_trip" Multiplicity="1" />
+          <End Role="tbl_tripmember" Type="Self.tbl_tripmember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_trip">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_tripmember">
+              <PropertyRef Name="id_trip" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MarlinFleetBDModelStoreContainer">
+          <EntitySet Name="tbl_boat" EntityType="Self.tbl_boat" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_catch" EntityType="Self.tbl_catch" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_fishingport" EntityType="Self.tbl_fishingport" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_fspecies" EntityType="Self.tbl_fspecies" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_member" EntityType="Self.tbl_member" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_trip" EntityType="Self.tbl_trip" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_tripmember" EntityType="Self.tbl_tripmember" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__tbl_boat__weight__0A9D95DB" Association="Self.FK__tbl_boat__weight__0A9D95DB">
+            <End Role="tbl_fishingport" EntitySet="tbl_fishingport" />
+            <End Role="tbl_boat" EntitySet="tbl_boat" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_catch__id_sp__1DB06A4F" Association="Self.FK__tbl_catch__id_sp__1DB06A4F">
+            <End Role="tbl_fspecies" EntitySet="tbl_fspecies" />
+            <End Role="tbl_catch" EntitySet="tbl_catch" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_catch__id_tr__1CBC4616" Association="Self.FK__tbl_catch__id_tr__1CBC4616">
+            <End Role="tbl_trip" EntitySet="tbl_trip" />
+            <End Role="tbl_catch" EntitySet="tbl_catch" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_trip__destin__0E6E26BF" Association="Self.FK__tbl_trip__destin__0E6E26BF">
+            <End Role="tbl_boat" EntitySet="tbl_boat" />
+            <End Role="tbl_trip" EntitySet="tbl_trip" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_tripm__id_me__18EBB532" Association="Self.FK__tbl_tripm__id_me__18EBB532">
+            <End Role="tbl_member" EntitySet="tbl_member" />
+            <End Role="tbl_tripmember" EntitySet="tbl_tripmember" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_tripm__id_tr__17F790F9" Association="Self.FK__tbl_tripm__id_tr__17F790F9">
+            <End Role="tbl_trip" EntitySet="tbl_trip" />
+            <End Role="tbl_tripmember" EntitySet="tbl_tripmember" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MarlinFleetBDModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="tbl_boat">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="id_fishingport" Type="Guid" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="registration" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="weight" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <NavigationProperty Name="tbl_fishingport" Relationship="Self.FK__tbl_boat__weight__0A9D95DB" FromRole="tbl_boat" ToRole="tbl_fishingport" />
+          <NavigationProperty Name="tbl_trip" Relationship="Self.FK__tbl_trip__destin__0E6E26BF" FromRole="tbl_boat" ToRole="tbl_trip" />
+        </EntityType>
+        <EntityType Name="tbl_catch">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="id_trip" Type="Guid" Nullable="false" />
+          <Property Name="id_specie" Type="Guid" Nullable="false" />
+          <Property Name="quantity" Type="Int32" Nullable="false" />
+          <Property Name="weight" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <NavigationProperty Name="tbl_fspecies" Relationship="Self.FK__tbl_catch__id_sp__1DB06A4F" FromRole="tbl_catch" ToRole="tbl_fspecies" />
+          <NavigationProperty Name="tbl_trip" Relationship="Self.FK__tbl_catch__id_tr__1CBC4616" FromRole="tbl_catch" ToRole="tbl_trip" />
+        </EntityType>
+        <EntityType Name="tbl_fishingport">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="location" Type="String" MaxLength="60" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="capacity" Type="Int32" />
+          <NavigationProperty Name="tbl_boat" Relationship="Self.FK__tbl_boat__weight__0A9D95DB" FromRole="tbl_fishingport" ToRole="tbl_boat" />
+        </EntityType>
+        <EntityType Name="tbl_fspecies">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="tbl_catch" Relationship="Self.FK__tbl_catch__id_sp__1DB06A4F" FromRole="tbl_fspecies" ToRole="tbl_catch" />
+        </EntityType>
+        <EntityType Name="tbl_member">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="60" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="surnames" Type="String" MaxLength="60" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="role" Type="String" MaxLength="40" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="experience_years" Type="Int32" />
+          <Property Name="registration_date" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="tbl_trip" Relationship="Self.tbl_tripmember" FromRole="tbl_member" ToRole="tbl_trip" />
+        </EntityType>
+        <EntityType Name="tbl_trip">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Guid" Nullable="false" />
+          <Property Name="id_boat" Type="Guid" Nullable="false" />
+          <Property Name="departure_date" Type="DateTime" Nullable="false" />
+          <Property Name="return_date" Type="DateTime" />
+          <Property Name="destination" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tbl_boat" Relationship="Self.FK__tbl_trip__destin__0E6E26BF" FromRole="tbl_trip" ToRole="tbl_boat" />
+          <NavigationProperty Name="tbl_catch" Relationship="Self.FK__tbl_catch__id_tr__1CBC4616" FromRole="tbl_trip" ToRole="tbl_catch" />
+          <NavigationProperty Name="tbl_member" Relationship="Self.tbl_tripmember" FromRole="tbl_trip" ToRole="tbl_member" />
+        </EntityType>
+        <Association Name="FK__tbl_boat__weight__0A9D95DB">
+          <End Role="tbl_fishingport" Type="Self.tbl_fishingport" Multiplicity="1" />
+          <End Role="tbl_boat" Type="Self.tbl_boat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_fishingport">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_boat">
+              <PropertyRef Name="id_fishingport" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_trip__destin__0E6E26BF">
+          <End Role="tbl_boat" Type="Self.tbl_boat" Multiplicity="1" />
+          <End Role="tbl_trip" Type="Self.tbl_trip" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_boat">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_trip">
+              <PropertyRef Name="id_boat" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_catch__id_sp__1DB06A4F">
+          <End Role="tbl_fspecies" Type="Self.tbl_fspecies" Multiplicity="1" />
+          <End Role="tbl_catch" Type="Self.tbl_catch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_fspecies">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_catch">
+              <PropertyRef Name="id_specie" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_catch__id_tr__1CBC4616">
+          <End Role="tbl_trip" Type="Self.tbl_trip" Multiplicity="1" />
+          <End Role="tbl_catch" Type="Self.tbl_catch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_trip">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_catch">
+              <PropertyRef Name="id_trip" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="tbl_tripmember">
+          <End Role="tbl_member" Type="Self.tbl_member" Multiplicity="*" />
+          <End Role="tbl_trip" Type="Self.tbl_trip" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="MarlinFleetBDEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tbl_boat" EntityType="Self.tbl_boat" />
+          <EntitySet Name="tbl_catch" EntityType="Self.tbl_catch" />
+          <EntitySet Name="tbl_fishingport" EntityType="Self.tbl_fishingport" />
+          <EntitySet Name="tbl_fspecies" EntityType="Self.tbl_fspecies" />
+          <EntitySet Name="tbl_member" EntityType="Self.tbl_member" />
+          <EntitySet Name="tbl_trip" EntityType="Self.tbl_trip" />
+          <AssociationSet Name="FK__tbl_boat__weight__0A9D95DB" Association="Self.FK__tbl_boat__weight__0A9D95DB">
+            <End Role="tbl_fishingport" EntitySet="tbl_fishingport" />
+            <End Role="tbl_boat" EntitySet="tbl_boat" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_trip__destin__0E6E26BF" Association="Self.FK__tbl_trip__destin__0E6E26BF">
+            <End Role="tbl_boat" EntitySet="tbl_boat" />
+            <End Role="tbl_trip" EntitySet="tbl_trip" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_catch__id_sp__1DB06A4F" Association="Self.FK__tbl_catch__id_sp__1DB06A4F">
+            <End Role="tbl_fspecies" EntitySet="tbl_fspecies" />
+            <End Role="tbl_catch" EntitySet="tbl_catch" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_catch__id_tr__1CBC4616" Association="Self.FK__tbl_catch__id_tr__1CBC4616">
+            <End Role="tbl_trip" EntitySet="tbl_trip" />
+            <End Role="tbl_catch" EntitySet="tbl_catch" />
+          </AssociationSet>
+          <AssociationSet Name="tbl_tripmember" Association="Self.tbl_tripmember">
+            <End Role="tbl_member" EntitySet="tbl_member" />
+            <End Role="tbl_trip" EntitySet="tbl_trip" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MarlinFleetBDModelStoreContainer" CdmEntityContainer="MarlinFleetBDEntities">
+          <EntitySetMapping Name="tbl_boat">
+            <EntityTypeMapping TypeName="MarlinFleetBDModel.tbl_boat">
+              <MappingFragment StoreEntitySet="tbl_boat">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="id_fishingport" ColumnName="id_fishingport" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="registration" ColumnName="registration" />
+                <ScalarProperty Name="weight" ColumnName="weight" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_catch">
+            <EntityTypeMapping TypeName="MarlinFleetBDModel.tbl_catch">
+              <MappingFragment StoreEntitySet="tbl_catch">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="id_trip" ColumnName="id_trip" />
+                <ScalarProperty Name="id_specie" ColumnName="id_specie" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="weight" ColumnName="weight" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_fishingport">
+            <EntityTypeMapping TypeName="MarlinFleetBDModel.tbl_fishingport">
+              <MappingFragment StoreEntitySet="tbl_fishingport">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="location" ColumnName="location" />
+                <ScalarProperty Name="capacity" ColumnName="capacity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_fspecies">
+            <EntityTypeMapping TypeName="MarlinFleetBDModel.tbl_fspecies">
+              <MappingFragment StoreEntitySet="tbl_fspecies">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_member">
+            <EntityTypeMapping TypeName="MarlinFleetBDModel.tbl_member">
+              <MappingFragment StoreEntitySet="tbl_member">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="surnames" ColumnName="surnames" />
+                <ScalarProperty Name="role" ColumnName="role" />
+                <ScalarProperty Name="experience_years" ColumnName="experience_years" />
+                <ScalarProperty Name="registration_date" ColumnName="registration_date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_trip">
+            <EntityTypeMapping TypeName="MarlinFleetBDModel.tbl_trip">
+              <MappingFragment StoreEntitySet="tbl_trip">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="id_boat" ColumnName="id_boat" />
+                <ScalarProperty Name="departure_date" ColumnName="departure_date" />
+                <ScalarProperty Name="return_date" ColumnName="return_date" />
+                <ScalarProperty Name="destination" ColumnName="destination" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="tbl_tripmember" TypeName="MarlinFleetBDModel.tbl_tripmember" StoreEntitySet="tbl_tripmember">
+            <EndProperty Name="tbl_member">
+              <ScalarProperty Name="id" ColumnName="id_member" />
+            </EndProperty>
+            <EndProperty Name="tbl_trip">
+              <ScalarProperty Name="id" ColumnName="id_trip" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

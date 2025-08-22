@@ -1,0 +1,33 @@
+﻿using MarlinFleetAPI.Models;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
+using System.Web;
+
+namespace MarlinFleetAPI.Services
+{
+    public class fishingportService
+    {
+        private MarlinFleetBDEntities marlinBD;
+
+        public fishingportService()
+        {
+            marlinBD = new MarlinFleetBDEntities();
+        }
+
+        public List<tbl_fishingport> ListAllPorts()
+        {
+            return marlinBD.tbl_fishingport.ToList();
+        }
+
+        public tbl_fishingport CreateNewPort( tbl_fishingport newPort)
+        {
+            tbl_fishingport portEntity = null;
+            portEntity = marlinBD.tbl_fishingport.Add(newPort);
+            marlinBD.SaveChanges();
+            return portEntity;
+        }
+
+    }
+}
