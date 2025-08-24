@@ -26,6 +26,9 @@ namespace MarlinFleetAPI.Models
         public string role { get; set; }
         public Nullable<int> experience_years { get; set; }
         public System.DateTime registration_date { get; set; }
+        public int age { get; set; }
+        public string phone { get; set; }
+        public string email { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<tbl_trip> tbl_trip { get; set; }

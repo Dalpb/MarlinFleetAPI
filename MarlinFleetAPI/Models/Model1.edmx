@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="MarlinFleetBDModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="MarlinFleetBDModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="tbl_boat">
           <Key>
             <PropertyRef Name="id" />
@@ -51,6 +51,9 @@
           <Property Name="role" Type="nvarchar" MaxLength="40" Nullable="false" />
           <Property Name="experience_years" Type="int" />
           <Property Name="registration_date" Type="date" Nullable="false" />
+          <Property Name="age" Type="int" Nullable="false" />
+          <Property Name="phone" Type="nvarchar" MaxLength="50" />
+          <Property Name="email" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="tbl_trip">
           <Key>
@@ -175,8 +178,7 @@
             <End Role="tbl_tripmember" EntitySet="tbl_tripmember" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MarlinFleetBDModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -231,8 +233,11 @@
           <Property Name="surnames" Type="String" MaxLength="60" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="role" Type="String" MaxLength="40" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="experience_years" Type="Int32" />
-          <Property Name="registration_date" Type="DateTime" Nullable="false" />
+          <Property Name="registration_date" Type="DateTime" Nullable="false" Precision="0" />
           <NavigationProperty Name="tbl_trip" Relationship="Self.tbl_tripmember" FromRole="tbl_member" ToRole="tbl_trip" />
+          <Property Name="age" Type="Int32" Nullable="false" />
+          <Property Name="phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_trip">
           <Key>
@@ -240,8 +245,8 @@
           </Key>
           <Property Name="id" Type="Guid" Nullable="false" />
           <Property Name="id_boat" Type="Guid" Nullable="false" />
-          <Property Name="departure_date" Type="DateTime" Nullable="false" />
-          <Property Name="return_date" Type="DateTime" />
+          <Property Name="departure_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="return_date" Type="DateTime" Precision="3" />
           <Property Name="destination" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="tbl_boat" Relationship="Self.FK__tbl_trip__destin__0E6E26BF" FromRole="tbl_trip" ToRole="tbl_boat" />
           <NavigationProperty Name="tbl_catch" Relationship="Self.FK__tbl_catch__id_tr__1CBC4616" FromRole="tbl_trip" ToRole="tbl_catch" />
@@ -376,6 +381,9 @@
           <EntitySetMapping Name="tbl_member">
             <EntityTypeMapping TypeName="MarlinFleetBDModel.tbl_member">
               <MappingFragment StoreEntitySet="tbl_member">
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+                <ScalarProperty Name="age" ColumnName="age" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="surnames" ColumnName="surnames" />

@@ -11,27 +11,43 @@ using System.Web.Http.Description;
 using System.Web.Http.Results;
 using MarlinFleetAPI.Models;
 using MarlinFleetAPI.Services;
+using log4net;
+using System.Runtime.Remoting.Messaging;
 
 namespace MarlinFleetAPI.Controllers
 {
-    [RoutePrefix("/fishingport")]
+    [RoutePrefix("fishingport")]
     public class fishingportController : ApiController
     {
         private fishingportService FishingportService = new fishingportService();
+        private static readonly ILog logger = LogManager.GetLogger(typeof(fishingportController));
 
         [HttpGet]
         public IHttpActionResult GetAllPorts()
         {
+            var response = new ApiResponse<List<tbl_fishingport>>("", null, false);
+            logger.Info("Fetching GET all Fishing Ports");
             List<tbl_fishingport> listports = new List<tbl_fishingport>();
-            listports = FishingportService.ListAllPorts();
-            var response = new ApiResponse<List<tbl_fishingport>>("port's list success",listports,true);
-            return Ok(response);
+            try
+            {
+                listports = FishingportService.ListAllPorts();
+                response.message = "Fetching Port's list success";
+                response.success = true;
+                response.data = listports;
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"ERROR : {ex.Message}");
+                response.message = "Fetching ports error";
+                return Content(HttpStatusCode.BadRequest, response);
+            }
         }
         [HttpGet]
         public IHttpActionResult GetPortById(Guid uuid)
         {
-            var port = FishingportService.findPort(uuid);
             var response = new ApiResponse<tbl_fishingport>("",null,false);
+            var port = FishingportService.FindPort(uuid);
             if(port is null)
             { 
                 response.message = "Not Found port: " + uuid;
@@ -39,6 +55,7 @@ namespace MarlinFleetAPI.Controllers
             }
             response.success = true;
             response.message = "Port Founded: " + uuid;
+            response.data = port;
             return Ok(response);
         }
 
@@ -63,18 +80,18 @@ namespace MarlinFleetAPI.Controllers
         }
 
         [HttpPut]
-        public IHttpActionResult PutFishingPort(Guid id, [FromBody] tbl_fishingport upfishingport)
+        public IHttpActionResult PutFishingPort(Guid uuid, [FromBody] tbl_fishingport upfishingport)
         {
             var response = new ApiResponse<tbl_fishingport>("", null, false);
-            if(upfishingport.id == id)
+            if(upfishingport.id != uuid)
             {
                 response.message = "Id is not equal";
                 return Content(HttpStatusCode.BadRequest, response);
             }
-            var currPort = FishingportService.findPort(id);
+            var currPort = FishingportService.FindPort(uuid);
             if (currPort is null)
             {
-                response.message = "Not Found port'id: " + id;
+                response.message = "Not Found port'id: " + uuid;
                 return Content(HttpStatusCode.NotFound, response);
             }
             try
@@ -82,6 +99,7 @@ namespace MarlinFleetAPI.Controllers
                 FishingportService.UpdatePort(currPort, upfishingport);
                 response.message = "Port update successfuly";
                 response.success = true;
+                response.data = currPort;
                 return Ok(response);
             }
             catch (Exception ex)
@@ -90,6 +108,55 @@ namespace MarlinFleetAPI.Controllers
                 return Content(HttpStatusCode.InternalServerError, response); 
             }
         }
+
+        [HttpPatch]
+        public IHttpActionResult PatchFishingPort(Guid uuid, [FromBody] dynamic partBody)
+        {
+            var response = new ApiResponse<tbl_fishingport>("", null, false);
+            var currPort = FishingportService.FindPort(uuid);
+            if(currPort is null)
+            {
+                response.message = "Not Found port'id: " + uuid;
+                return Content(HttpStatusCode.NotFound, response);
+            }
+            try
+            {
+                FishingportService.PatchPartialPort(currPort, partBody);
+                response.message = "Port update successfuly";
+                response.success = true;
+                response.data = currPort;
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.message = "Server Error";
+                return Content(HttpStatusCode.InternalServerError, response);
+            }
+
+        }
+
+        [HttpDelete]
+        public IHttpActionResult DeleteFishingPort(Guid uuid) { 
+            var response = new ApiResponse<tbl_fishingport>("", null, false);
+            var port = FishingportService.FindPort(uuid);
+            if(port is null)
+            {
+                response.message = "Not Found port'id: " + uuid;
+                return Content(HttpStatusCode.NotFound, response);
+            }
+            try
+            {
+                FishingportService.DeletePort(port);
+                response.success = true;
+                return Content(HttpStatusCode.NoContent, response);
+            }
+            catch(Exception e)
+            {
+                response.message = "Server Error";
+                return Content(HttpStatusCode.InternalServerError, response);
+            }
+        }
+
 
 
         // GET: api/fishingport

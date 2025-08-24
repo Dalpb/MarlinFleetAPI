@@ -21,15 +21,14 @@ namespace MarlinFleetAPI.Services
             return marlinBD.tbl_fishingport.ToList();
         }
 
-        public tbl_fishingport findPort(Guid id)
+        public tbl_fishingport FindPort(Guid id)
         {
             return marlinBD.tbl_fishingport.Find(id);
         }
 
         public tbl_fishingport CreateNewPort( tbl_fishingport newPort)
         {
-            tbl_fishingport portEntity = null;
-            portEntity = marlinBD.tbl_fishingport.Add(newPort);
+            tbl_fishingport portEntity = marlinBD.tbl_fishingport.Add(newPort);
             marlinBD.SaveChanges();
             return portEntity;
         }
@@ -43,5 +42,20 @@ namespace MarlinFleetAPI.Services
             marlinBD.SaveChanges();
         }
 
+        public void PatchPartialPort(tbl_fishingport currentPort, dynamic partialPort)
+        {
+            if(partialPort.name != null)
+                currentPort.name = partialPort.name;
+            if(partialPort.location != null) 
+                currentPort.location = partialPort.location;
+            if(partialPort.capacity != null)
+                currentPort.capacity = partialPort.capacity;
+            marlinBD.SaveChanges();
+        }
+        public void DeletePort(tbl_fishingport port)
+        {
+            marlinBD.tbl_fishingport.Remove(port);
+            marlinBD.SaveChanges();
+        }
     }
 }
