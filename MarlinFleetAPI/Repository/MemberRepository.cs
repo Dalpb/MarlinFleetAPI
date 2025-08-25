@@ -15,9 +15,9 @@ namespace MarlinFleetAPI.Repository
         public MemberRepository(MarlinFleetBDEntities db) : base(db) { 
         }
 
-        public async Task<tbl_member> FindByNameAsync(string surname,string name)
+        public tbl_member FindByName(string surname,string name)
         {
-            return await bdset.FirstOrDefaultAsync(m => m.surnames.Equals(surname) && m.name.Equals(name));
+            return bdset.FirstOrDefault(m => m.surnames == surname && m.name == name);
         }
 
     }

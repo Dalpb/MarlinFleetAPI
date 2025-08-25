@@ -29,14 +29,14 @@ namespace MarlinFleetAPI.DAL
             bdset = context.Set<T>(); //es como el acceso a la tabla que quiero
         }
 
-        public async Task<T> FindById(Guid id)
+        public Task<T> FindById(Guid id)
         {
-            return await bdset.FindAsync(id);
+            return bdset.FindAsync(id);
         }
 
-        public async Task<List<T>> GetAll()
+        public Task<List<T>> GetAll()
         {
-            return await bdset.ToListAsync();
+            return  bdset.ToListAsync();
         }
 
         public T Insert(T entity)

@@ -58,9 +58,9 @@ namespace MarlinFleetAPI.Repository
             this._disposed = true;
         }
 
-        public async Task<int> SaveChangesAsync()
+        public  Task<int> SaveChangesAsync()
         {
-           return await context.SaveChangesAsync();
+           return  context.SaveChangesAsync();
         }
     }
 }

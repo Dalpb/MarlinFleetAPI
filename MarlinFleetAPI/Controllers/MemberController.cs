@@ -17,6 +17,7 @@ namespace MarlinFleetAPI.Controllers
     {
         private MemberService memberService ;
 
+        //se debe esperar a realizar la operacion antes de terminar la conexión
         [HttpGet]
         public async Task<IHttpActionResult> GetAllMembers()
         {
@@ -36,14 +37,14 @@ namespace MarlinFleetAPI.Controllers
         }
 
         [HttpGet]
-        public IHttpActionResult GetMember(Guid uuid)
+        public async Task<IHttpActionResult> GetMember(Guid uuid)
         {
             using (var unitOfWork = new UnitOfWork())
             {
                 try
                 {
                     memberService = new MemberService(unitOfWork);
-                    var member = memberService.FindMemberById(uuid);
+                    var member = await memberService.FindMemberById(uuid);
                     if (member is null)
                         return NotFound();
 
@@ -57,7 +58,7 @@ namespace MarlinFleetAPI.Controllers
         }
 
         [HttpPost]
-        public IHttpActionResult PostMember([FromBody] tbl_member memberBody)
+        public async Task<IHttpActionResult> PostMember([FromBody] tbl_member memberBody)
         {
             using (var unitOfWork = new UnitOfWork())
             {
@@ -65,7 +66,7 @@ namespace MarlinFleetAPI.Controllers
                 {
                     memberService = new MemberService(unitOfWork);
 
-                    tbl_member member = memberService.RegisterMember(memberBody);
+                    tbl_member member = await memberService.RegisterMember(memberBody);
                     return Content(HttpStatusCode.Created, member);
                 }
                 catch (InvalidOperationException ex)
@@ -80,14 +81,14 @@ namespace MarlinFleetAPI.Controllers
         }
 
         [HttpPut]
-        public IHttpActionResult PutMember(Guid uuid,[FromBody] tbl_member upmember)
+        public async Task<IHttpActionResult> PutMember(Guid uuid,[FromBody] tbl_member upmember)
         {
             using (var unitOfWork = new UnitOfWork())
             {
                 try
                 {
                     memberService = new MemberService(unitOfWork);
-                     _ = memberService.UpdateMember(uuid, upmember);
+                    await memberService.UpdateMember(uuid, upmember);
                     return StatusCode(HttpStatusCode.NoContent);
                 }
                 catch (KeyNotFoundException) 
@@ -105,14 +106,14 @@ namespace MarlinFleetAPI.Controllers
         }
 
         [HttpDelete]
-        public IHttpActionResult DeleteMember(Guid uuid)
+        public async Task<IHttpActionResult> DeleteMember(Guid uuid)
         {
             using (var unitOfWork = new UnitOfWork())
             {
                 try
                 {
                     memberService = new MemberService(unitOfWork);
-                    memberService.DeleteMember(uuid);
+                    await memberService.DeleteMember(uuid);
                     return StatusCode(HttpStatusCode.NoContent);
                 }
                 catch (KeyNotFoundException)
