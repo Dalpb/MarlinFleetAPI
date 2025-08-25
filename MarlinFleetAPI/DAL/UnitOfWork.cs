@@ -13,15 +13,56 @@ namespace MarlinFleetAPI.Repository
         Task<int> SaveChangesAsync();
         MemberRepository MemberRepository { get; }
         BoatRepository BoatRepository { get; }
+        FishingPortRepository FishingPortRepository { get; }
+        TripRepository TripRepository { get; }
+        FSpeciesRepository FSpeciesRepository { get; }
+        
     }
     public class UnitOfWork : IUnitOfWork
     {
         private MarlinFleetBDEntities context { get; } = new MarlinFleetBDEntities(); 
         private MemberRepository memberRepository;
         private BoatRepository boatRepository;
+        private FishingPortRepository fishingPortRepository;
+        private TripRepository tripRepository;
+        private FSpeciesRepository fspeciesRepository;
+
         private bool _disposed;
         public UnitOfWork(){
             
+        }
+
+        public FishingPortRepository FishingPortRepository
+        {
+            get
+            {
+                if (this.fishingPortRepository == null)
+                {
+                    this.fishingPortRepository = new FishingPortRepository(context);
+                }
+                return this.fishingPortRepository;
+            }
+        }
+        public TripRepository TripRepository
+        {
+            get
+            {
+                if (this.tripRepository == null)
+                {
+                    this.tripRepository = new TripRepository(context);
+                }
+                return this.tripRepository;
+            }
+        }
+        public FSpeciesRepository FSpeciesRepository
+        {
+            get
+            {
+                if (this.fspeciesRepository == null) {
+                    this.fspeciesRepository = new FSpeciesRepository(context);
+                }
+                return this.fspeciesRepository;
+            }
         }
 
         public MemberRepository MemberRepository

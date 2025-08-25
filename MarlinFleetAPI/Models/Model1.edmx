@@ -13,7 +13,11 @@
           <Property Name="id_fishingport" Type="uniqueidentifier" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="registration" Type="varchar" MaxLength="7" Nullable="false" />
-          <Property Name="weight" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="displacement_tons" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="fuel_capacity" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="created_at" Type="datetime" />
+          <Property Name="updated_at" Type="datetime" />
+          <Property Name="status" Type="nvarchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="tbl_catch">
           <Key>
@@ -193,6 +197,11 @@
           <Property Name="weight" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
           <NavigationProperty Name="tbl_fishingport" Relationship="Self.FK__tbl_boat__weight__0A9D95DB" FromRole="tbl_boat" ToRole="tbl_fishingport" />
           <NavigationProperty Name="tbl_trip" Relationship="Self.FK__tbl_trip__destin__0E6E26BF" FromRole="tbl_boat" ToRole="tbl_trip" />
+          <Property Name="displacement_tons" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="fuel_capacity" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="created_at" Type="DateTime" Precision="3" />
+          <Property Name="updated_at" Type="DateTime" Precision="3" />
+          <Property Name="status" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_catch">
           <Key>
@@ -341,11 +350,15 @@
           <EntitySetMapping Name="tbl_boat">
             <EntityTypeMapping TypeName="MarlinFleetBDModel.tbl_boat">
               <MappingFragment StoreEntitySet="tbl_boat">
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="updated_at" ColumnName="updated_at" />
+                <ScalarProperty Name="created_at" ColumnName="created_at" />
+                <ScalarProperty Name="fuel_capacity" ColumnName="fuel_capacity" />
+                <ScalarProperty Name="displacement_tons" ColumnName="displacement_tons" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="id_fishingport" ColumnName="id_fishingport" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="registration" ColumnName="registration" />
-                <ScalarProperty Name="weight" ColumnName="weight" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

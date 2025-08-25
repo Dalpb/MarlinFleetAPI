@@ -24,7 +24,11 @@ namespace MarlinFleetAPI.Models
         public System.Guid id_fishingport { get; set; }
         public string name { get; set; }
         public string registration { get; set; }
-        public decimal weight { get; set; }
+        public decimal displacement_tons { get; set; }
+        public Nullable<decimal> fuel_capacity { get; set; }
+        public Nullable<System.DateTime> created_at { get; set; }
+        public Nullable<System.DateTime> updated_at { get; set; }
+        public string status { get; set; }
     
         public virtual tbl_fishingport tbl_fishingport { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

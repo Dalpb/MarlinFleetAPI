@@ -181,9 +181,13 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\BoatRepository.cs" />
+    <Compile Include="Repository\CatchRepository.cs" />
+    <Compile Include="Repository\FishingPortRepository.cs" />
+    <Compile Include="Repository\FSpeciesRepository.cs" />
     <Compile Include="Repository\MemberRepository.cs" />
     <Compile Include="DAL\UnitOfWork.cs" />
-    <Compile Include="Services\BoatRepository.cs" />
+    <Compile Include="Repository\TripRepository.cs" />
+    <Compile Include="Services\BoatService.cs" />
     <Compile Include="Services\fishingportService.cs" />
     <Compile Include="Services\MemberService.cs" />
   </ItemGroup>
