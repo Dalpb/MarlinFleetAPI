@@ -4,17 +4,17 @@ using Microsoft.Ajax.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace MarlinFleetAPI.Services
 {
     public class MemberService
     {
-        private MemberRepository memberRepository;
-
-        public MemberService()
+        private IUnitOfWork _unitOfWork;
+        public MemberService(IUnitOfWork unitOfWork)
         {
-            memberRepository = new MemberRepository();
+            _unitOfWork = unitOfWork;
         }
         private bool ExistTripRole(string role)
         {
@@ -32,28 +32,35 @@ namespace MarlinFleetAPI.Services
             if (!ExistTripRole(role)) 
                 throw new InvalidOperationException($"The role {role} doesn't exists");
         }
-
-        public List<tbl_member> ListAllMembers()
+        private async void VerifyExistMemberByName(string surname,string name)
         {
-            return memberRepository.GetAll();
+            var member = await _unitOfWork.MemberRepository.FindByNameAsync(surname, name);
+            if(member != null)
+                throw new InvalidOperationException("This member has been alredy registerd");
         }
-        public tbl_member FindMemberById(Guid uuiid) {
-            return memberRepository.FindById(uuiid);
+
+        public Task<List<tbl_member>> ListAllMembers()
+        {
+            return _unitOfWork.MemberRepository.GetAll();
+        }
+        public  Task<tbl_member> FindMemberById(Guid uuiid) {
+            return  _unitOfWork.MemberRepository.FindById(uuiid);
         }
         public tbl_member RegisterMember(tbl_member member)
         {
-            member.registration_date = DateTime.Now;
+            VerifyExistMemberByName(member.surnames,member.name);
             VerifyMemberAge(member.age);
             VerifyRole(member.role);    
-            tbl_member created = memberRepository.Add(member);
-            memberRepository.Save();
+
+            member.registration_date = DateTime.Now;
+            tbl_member created = _unitOfWork.MemberRepository.Insert(member);
+            _unitOfWork.SaveChangesAsync();
             return created;
         }
-        public void UpdateMember(Guid uuid,tbl_member memberUpdated) {
-            tbl_member member = memberRepository.FindById(uuid);
-
+        public async Task UpdateMember(Guid uuid,tbl_member memberUpdated) {
+            tbl_member member = await _unitOfWork.MemberRepository.FindById(uuid);
             if (member == null)
-                throw new InvalidOperationException("Member Not Found: " + member.id);
+                throw new KeyNotFoundException("Member Not Found: " + member.id);
             
             VerifyMemberAge(memberUpdated.age);
             VerifyRole(memberUpdated.role);
@@ -65,17 +72,17 @@ namespace MarlinFleetAPI.Services
             member.email = memberUpdated.email;
             member.phone = memberUpdated.phone;
 
-            memberRepository.Save();
+            _ = _unitOfWork.SaveChangesAsync();
 
         }
-        public void DeleteMember(Guid uuid)
+        public async void DeleteMember(Guid uuid)
         {
-            tbl_member member = memberRepository.FindById(uuid);
-            if(member is null)
-                throw new InvalidOperationException("Member Not Found: " + member.id);
+            tbl_member member = await _unitOfWork.MemberRepository.FindById(uuid);
+            if (member is null)
+                throw new KeyNotFoundException("Member Not Found: " + member.id);
 
-            memberRepository.Remove(member);
-            memberRepository.Save();
+            _unitOfWork.MemberRepository.Delete(member);
+            _ = _unitOfWork.SaveChangesAsync();
         }
 
 

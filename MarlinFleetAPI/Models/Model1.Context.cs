@@ -18,6 +18,9 @@ namespace MarlinFleetAPI.Models
         public MarlinFleetBDEntities()
             : base("name=MarlinFleetBDEntities")
         {
+            //Por el momento
+            this.Configuration.LazyLoadingEnabled= false;
+            this.Configuration.ProxyCreationEnabled= false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

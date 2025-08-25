@@ -18,7 +18,12 @@ namespace MarlinFleetAPI.Models
             this.data = data;
             this.success = success;
         }
-
+        public void ApplySuccessfulRequest(T data,string message)
+        {
+            this.message = message;
+            this.success = true;
+            this.data = data;
+        }
         public static ApiResponse<object> SystemErrorResponse()
         {
             return new ApiResponse<object>("System Error",null,false);

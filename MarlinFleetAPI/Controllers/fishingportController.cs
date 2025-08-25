@@ -25,38 +25,35 @@ namespace MarlinFleetAPI.Controllers
         [HttpGet]
         public IHttpActionResult GetAllPorts()
         {
-            var response = new ApiResponse<List<tbl_fishingport>>("", null, false);
             logger.Info("Fetching GET all Fishing Ports");
-            List<tbl_fishingport> listports = new List<tbl_fishingport>();
             try
             {
-                listports = FishingportService.ListAllPorts();
-                response.message = "Fetching Port's list success";
-                response.success = true;
-                response.data = listports;
-                return Ok(response);
+                List<tbl_fishingport> listports = FishingportService.ListAllPorts();
+                return Ok(listports);
             }
             catch (Exception ex)
             {
                 logger.Error($"ERROR : {ex.Message}");
-                response.message = "Fetching ports error";
-                return Content(HttpStatusCode.BadRequest, response);
+                return InternalServerError(ex);
             }
         }
         [HttpGet]
         public IHttpActionResult GetPortById(Guid uuid)
         {
-            var response = new ApiResponse<tbl_fishingport>("",null,false);
-            var port = FishingportService.FindPort(uuid);
-            if(port is null)
-            { 
-                response.message = "Not Found port: " + uuid;
-                return Content(HttpStatusCode.NotFound, response);
+            try
+            {
+                var port = FishingportService.FindPort(uuid);
+                if (port is null)
+                {
+                    return NotFound();
+                }
+                return Ok(port);
             }
-            response.success = true;
-            response.message = "Port Founded: " + uuid;
-            response.data = port;
-            return Ok(response);
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+            
         }
 
         [HttpPost]
